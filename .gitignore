@@ -4,7 +4,7 @@ target
 *.iml
 CharObject.java
 Cryptoanalysis.java
-pom.xml
 *.txt
-.DS_Store.DS_Store
 .DS_Store
+pom.xml
+.DS_Store.DS_Store
