@@ -1,5 +1,8 @@
+import org.w3c.dom.ls.LSOutput;
+
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Cryptanalysis {
     private static Map<Character, Integer> characterFrequency = new HashMap<>();
@@ -28,6 +31,7 @@ public class Cryptanalysis {
 
         TreeMap<Double, Character> percentageRatio = new TreeMap<>();
         char[] chars = text.toCharArray();
+        Set <Character> uncharismatic = new HashSet<>();
         for (char aChar : chars) {
             if (characterFrequency.containsKey(aChar)) {
                 int frequency = characterFrequency.get(aChar);
@@ -35,6 +39,7 @@ public class Cryptanalysis {
             }
             else characterFrequency.put(aChar, 1);
         }
+        System.out.println("characterFrequency.size() " + characterFrequency.size());
         for (Character character : characterFrequency.keySet()) {
             double percent = (double) characterFrequency.get(character)*100/chars.length;
             percentageRatio.put(percent, character);
@@ -54,13 +59,21 @@ public class Cryptanalysis {
             StringBuilder buildExampleText = new StringBuilder();
             StringBuilder buildSrcText = new StringBuilder();
             while (exampleReader.ready()) {
-                buildExampleText.append(exampleReader.ready());
+                buildExampleText.append(exampleReader.readLine());
             }
             while (srcReader.ready()) {
-                buildSrcText.append(srcReader.read());
+                buildSrcText.append(srcReader.readLine());
             }
             TreeMap<Double, Character> example = new Cryptanalysis().getStatistic(buildExampleText.toString());
+           /* System.out.println("example");
+            for (Map.Entry<Double, Character> doubleCharacterEntry : example.entrySet()) {
+                System.out.println(doubleCharacterEntry.getValue() + " " + doubleCharacterEntry.getKey());
+            }*/
             TreeMap<Double, Character> src = new Cryptanalysis().getStatistic(buildSrcText.toString());
+           /* System.out.println("src");
+            for (Map.Entry<Double, Character> doubleCharacterEntry : src.entrySet()) {
+                System.out.println(doubleCharacterEntry.getValue() + " " + doubleCharacterEntry.getKey());
+            }*/
             for (Double aDouble : src.keySet()) {
                 association.put(src.get(aDouble), example.get(example.floorKey(aDouble)));
             }
@@ -73,10 +86,10 @@ public class Cryptanalysis {
     public static void main(String[] args) {
         System.out.println("Введите путь к файлу или имя файла с текстом, который нужно расшифровать");
         Scanner scanner = new Scanner(System.in);
-        String fileSrc = scanner.next();
+        String fileSrc = scanner.nextLine();
         String fileResult = fileSrc.replace(".txt", "_DecryptedByStylisticAnalysis.txt");
         System.out.println("Введите путь к файлу или имя файла с похожим текстом");
-        String exampleFile = scanner.next();
+        String exampleFile = scanner.nextLine();
         HashMap<Character, Character> matchingCharacters = new Cryptanalysis().getMatchingCharacters(fileSrc,
                 exampleFile);
         try (FileReader reader = new FileReader(fileSrc);
@@ -89,5 +102,6 @@ public class Cryptanalysis {
         } catch (IOException e) {
             System.out.println("Произошла ошибка при чтении из файла, попробуйте снова");
         }
+        System.out.println(String.format("Готово. Расшифрованный текст находтся в %s", fileResult));
     }
 }
