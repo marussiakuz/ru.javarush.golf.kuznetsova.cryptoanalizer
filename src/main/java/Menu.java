@@ -1,13 +1,11 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Scanner;
 
 public class Menu {
     private static Scanner scanner = new Scanner(System.in);
     private static String userInput;
     private static CaesarsCipher caesarsCipher = new CaesarsCipher();
-    private static int letterOffset;
 
     public static void main (String[] args) {
         while (true) {
@@ -43,7 +41,7 @@ public class Menu {
         System.out.println("Enter the path to the file or the name of the file with the text you want to encrypt");
         String fileSrc = scanner.next();
         String fileResult = fileSrc.replace(".txt", "_Encrypted.txt");
-        letterOffset = new Random().nextInt(caesarsCipher.getAlphabet().size()-3) + 1;
+        int letterOffset = initializeTheKey();
 
         try (FileReader reader = new FileReader(fileSrc);
              FileWriter writer = new FileWriter(fileResult)) {
@@ -109,5 +107,30 @@ public class Menu {
             letterOffset = caesarsCipher.determineTheOffset(chars);
         }
         return letterOffset;
+    }
+
+    public static int initializeTheKey () {
+        System.out.println("Enter any positive integer greater than zero");
+        boolean isTheKeyEnteredCorrectly = false;
+        int key = 0;
+        while (!isTheKeyEnteredCorrectly) {
+            userInput = scanner.next();
+            try {
+                key = Integer.parseInt(userInput);
+                if (key < 0) {
+                    System.out.println("A negative number was entered. Please enter a positive integer greater than "
+                            + "zero");
+                }
+                else if (key == 0) {
+                    System.out.println("The encryption key cannot be zero, since the text will not be encrypted. Please"
+                            + " try again");
+                }
+                else isTheKeyEnteredCorrectly = true;
+            } catch (NumberFormatException e) {
+                System.out.println("A non-integer numeric value has been entered, it is necessary to enter a positive "
+                        + "integer greater than zero. Please try again");
+            }
+        }
+        return key;
     }
 }

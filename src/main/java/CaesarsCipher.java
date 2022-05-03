@@ -17,7 +17,7 @@ public class CaesarsCipher {
     }
 
     public char decryptChar (char current, int letterOffset) {
-        int index = ALPHABET.indexOf(current) - letterOffset;
+        int index = ALPHABET.indexOf(current) - (letterOffset % ALPHABET.size());
         index = index >= 0 ? index : (ALPHABET.size() + index);
         return ALPHABET.get(index);
     }
