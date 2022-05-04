@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CaesarsCipher {
     private final static ArrayList<Character> ALPHABET = new ArrayList<>(List.of('А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж',
@@ -37,12 +38,11 @@ public class CaesarsCipher {
         int estimatedOffset = -1;
         for (int i = 1; i<ALPHABET.size() ; i++) {
             String decryptedString = decryptToString(chars, i);
-            if (decryptedString.contains(", ") || decryptedString.contains(". ")) {
-                ++count;
-            }
+            if (decryptedString.contains(", ")) count += countTheNumberOfOccurrences(decryptedString, ", ");
+            if (decryptedString.contains(". ")) count += countTheNumberOfOccurrences(decryptedString, ". ");
             String[] partsOfDecryptedString = decryptedString.split(" ");
             for (int j = 0; j < partsOfDecryptedString.length; j++) {
-                count = switch (partsOfDecryptedString[j]) {
+                count = switch (partsOfDecryptedString[j].toLowerCase(Locale.ROOT)) {
                     case "и", "в", "не", "на", "что", "для", "быть", "а", "по", "как", "чтобы", "к", "при", "о", "зто",
                             "с", "но", "из", "у", "то", "за", "от", "же", "или", "бы", "до", "если", "без" -> ++count;
                     default -> count;
@@ -52,11 +52,16 @@ public class CaesarsCipher {
                 maxCount = count;
                 estimatedOffset = i;
             }
+            else count = 0;
         }
         return estimatedOffset;
     }
 
     public boolean contains (char ch) {
         return ALPHABET.contains(ch);
+    }
+
+    private static int countTheNumberOfOccurrences (String src, String target) {
+        return (src.length() - src.replace(target, "").length()) / target.length();
     }
 }
