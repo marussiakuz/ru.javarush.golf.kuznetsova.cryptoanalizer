@@ -33,10 +33,10 @@ public class CaesarsCipher {
     }
 
     public int determineTheOffset (ArrayList<Character> chars) {
-        int count = 0;
         int maxCount = 0;
         int estimatedOffset = -1;
         for (int i = 1; i<ALPHABET.size() ; i++) {
+            int count = 0;
             String decryptedString = decryptToString(chars, i);
             if (decryptedString.contains(", ")) count += countTheNumberOfOccurrences(decryptedString, ", ");
             if (decryptedString.contains(". ")) count += countTheNumberOfOccurrences(decryptedString, ". ");
@@ -52,7 +52,6 @@ public class CaesarsCipher {
                 maxCount = count;
                 estimatedOffset = i;
             }
-            else count = 0;
         }
         return estimatedOffset;
     }
